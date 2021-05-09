@@ -3,7 +3,6 @@ A=rand(n); A=0.5*(A+A');
 A=A+n*eye(n); 
 B=A;
 
-
 function A = scalar_chol(A, n)
   for j=1:n
     for k=1:j-1
@@ -20,7 +19,8 @@ function A = vector_chol(A,n)
   endfor
 endfunction
 
-A = vector_chol(A, n)
-
-G=tril(A,0); % R=chol(B,"lower");
-norm(B-G*G')
+for i:n
+  A = vector_chol(A, n)
+  G=tril(A,0); % R=chol(B,"lower");
+  ans[i] = norm(B-G*G')
+endfor
