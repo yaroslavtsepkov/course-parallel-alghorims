@@ -10,26 +10,25 @@ double **alloc_matrix(int row, int column){
         matrix[i] = matrix[0]+i*column;
     return matrix;
 }
-void symmetric(int row, int column, double matrix[row][column]){
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < column; j++)
-        {
-            matrix[i][j] = 0.5*(matrix[i][j]+matrix[j][i]);
+double **eye(int row, int column){
+    double **eye_matrix;
+    for(int i=0;i<row;i++){
+        for(int j=0;j<column;j++){
+            if(i==j){
+                eye_matrix[i][j] = 1;
+            }else{
+                eye_matrix[i][j] = 0;
+            }
         }
     }
+    return eye_matrix;
 }
-void eye(int row, int column, double matrix[row][column]){
-    for(int i=0; i<row; i++){
-        matrix[i][i] = 1;
-    }
-}
-void fill(int row, int column, double matrix[row][column]){
-    for(int i=0; i<row; i++){
-        for(int j=0; j<column; j++)
-            matrix[i][j]=rand()%10;
-    }
-}
+// void fill(int row, int column, double matrix[row][column]){
+//     for(int i=0; i<row; i++){
+//         for(int j=0; j<column; j++)
+//             matrix[i][j]=rand()%10;
+//     }
+// }
 void show(int row, int column, double matrix[row][column]){
     for(int i=0; i<row; i++){
         for(int j=0; j<column; j++)
@@ -37,91 +36,91 @@ void show(int row, int column, double matrix[row][column]){
         printf("\n");
     }
 }
-void chol_bana_decomp(int row, int column, double matrix[row][column]){
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < i; j++)
-        {
-            double sum = 0;
-            for (int k = 0; k < j; k++){
-                sum+= matrix[i][k]*matrix[j][k];
-            if (i == j)
-                matrix[i][j] = sqrt(matrix[i][j]-sum);
-            else
-                matrix[i][j] = (1.0 / matrix[j][j]*(matrix[i][j]-matrix[i][k]*matrix[j][k]));
-            }
-        }
-    }
+// void chol_bana_decomp(int row, int column, double matrix[row][column]){
+//     for (int i = 0; i < row; i++)
+//     {
+//         for (int j = 0; j < i; j++)
+//         {
+//             double sum = 0;
+//             for (int k = 0; k < j; k++){
+//                 sum+= matrix[i][k]*matrix[j][k];
+//             if (i == j)
+//                 matrix[i][j] = sqrt(matrix[i][j]-sum);
+//             else
+//                 matrix[i][j] = (1.0 / matrix[j][j]*(matrix[i][j]-matrix[i][k]*matrix[j][k]));
+//             }
+//         }
+//     }
     
-}
-void chol(int row, int column, double matrix[row][column]){
-    for (int j = 0; j < row; j++)
-    {
-        for (int k = 0; k < j; k++){
-            for (int i = 0; i < row; i++)
-            {
-                matrix[i][j] = matrix[i][j] - matrix[i][k]*matrix[j][k];
-                
-            }
-            
-        }
-    }
-    
-}
-void chol_crout_decomp(int row, int column, double matrix[row][column]){
-    for (int j = 0; j < row; j++) {
-        float sum = 0;
-        for (int k = 0; k < j; k++) {
-            sum += matrix[j][k] * matrix[j][k];
-        }
-        matrix[j][j] = sqrt(matrix[j][j] - sum);
+// }
+// void chol_crout_decomp(int row, int column, double matrix[row][column]){
+//     for (int j = 0; j < row; j++) {
+//         float sum = 0;
+//         for (int k = 0; k < j; k++) {
+//             sum += matrix[j][k] * matrix[j][k];
+//         }
+//         matrix[j][j] = sqrt(matrix[j][j] - sum);
 
-        for (int i = j + 1; i < row; i++) {
-            sum = 0;
-            for (int k = 0; k < j; k++) {
-                sum += matrix[i][k] * matrix[j][k];
-            }
-            matrix[i][j] = (1.0 / matrix[j][j] * (matrix[i][j] - sum));
-        }
-    }
-}
-void preprocessing(int row, int column, double matrix[row][column]){
-    double **matrix_eye = {0};
-    double **tmp;
-    matrix_eye = alloc_matrix(row, column);
-    tmp = alloc_matrix(row, column);
-    eye(row, column,(double(*)[])(*matrix_eye));
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < column; j++)
-        {
-            tmp[i][j] = 0.5*(matrix[i][j]+matrix[j][i]);
-            // matrix[i][j] = tmp[i][j];
-            // matrix[i][j] = matrix[i][j] + row * matrix_eye[i][j];
-        }   
-    }
-    matrix = (double (*)[])(*tmp);
-    free(*matrix_eye);
-    free(matrix_eye);
-}
+//         for (int i = j + 1; i < row; i++) {
+//             sum = 0;
+//             for (int k = 0; k < j; k++) {
+//                 sum += matrix[i][k] * matrix[j][k];
+//             }
+//             matrix[i][j] = (1.0 / matrix[j][j] * (matrix[i][j] - sum));
+//         }
+//     }
+// }
+// void preprocessing(int row, int column, double matrix[row][column]){
+//     double **temp;
+//     double **eye_matrix;
+//     temp = alloc_matrix(row, column);
+//     eye(row, column, (double(*)[])(*eye_matrix));
+//     show(row, column, (double(*)[])(*eye_matrix));
+//     for (int i = 0; i < row; i++)
+//     {
+//         for (int j = 0; j < column; j++)
+//         {
+//             temp[i][j] = matrix[j][i];
+//         }
+        
+//     }
+//      for (int i = 0; i < row; i++)
+//     {
+//         for (int j = 0; j < column; j++)
+//         {
+//             matrix[i][j] = 0.5*(matrix[i][j] + temp[i][j]);
+//         }
+        
+//     }
+//     free(*eye_matrix);
+//     free(eye_matrix);
+//     free(*temp);
+//     free(temp);
+// }
 int main(int argc, char const *argv[])
 {
-    int row,column;
-    double **A;
-    printf("enter rows: ");
-    scanf("%d", &row);
-    printf("enter columns: ");
-    scanf("%d", &column);
-    A = alloc_matrix(row, column);
-    fill(row, column, (double (*)[])(*A));
-    show(row, column, (double (*)[])(*A));
-    printf("%s \n", "after preprocessing");
-    preprocessing(row, column, (double (*)[])(*A));
-    show(row, column, (double (*)[])(*A));
-    printf("%s \n", "cholesky decomposit");
-    chol_crout_decomp(row, column,(double (*)[])(*A));
-    show(row, column, (double (*)[])(*A));
-    free(*A);
-    free(A);
+    int row=3, col=3;
+    double **eye_matrix;
+    printf("eye matrix\n");
+    eye_matrix = eye(row, col);
+    show(row,col,(double(*)[])(*eye_matrix));
+    // int row,column;
+    // double **A;
+    // printf("enter rows: ");
+    // scanf("%d", &row);
+    // printf("enter columns: ");
+    // scanf("%d", &column);
+    // A = alloc_matrix(row, column);
+    // fill(row, column, (double (*)[])(*A));
+    // printf("%s \n", "source matrix");
+    // show(row, column, (double (*)[])(*A));
+    // printf("%s \n", "after preprocessing");
+    // preprocessing(row, column, (double (*)[])(*A));
+    // show(row, column, (double (*)[])(*A));
+    // printf("%s \n", "cholesky decomposit");
+    // chol_crout_decomp(row, column,(double (*)[])(*A));
+    // show(row, column, (double (*)[])(*A));
+    // free(*A);
+    // free(A);
     return 0;
 }
