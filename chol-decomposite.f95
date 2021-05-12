@@ -17,7 +17,10 @@ program chol_decomposite_basic
     do i=1,N
         A(i,i)=float(N)+A(i,i);
     enddo
-    call disp("matrix A", A);
+    print *, "Matrix A";
+    do i=1,N
+        do j=1,N
+            print 
     C=A;
     ! !> vector version for chol decomposite
     ! do k=1,n
