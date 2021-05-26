@@ -1,36 +1,51 @@
 program chol
     implicit none
-    double precision, allocatable :: A(:,:), L(:,:), G(:,:); 
+    double precision, allocatable :: A(:,:), F(:,:), L(:,:), G(:,:); 
     integer :: i,j,k,n;
     real*8 :: start, finish;
     double precision :: temp, error;
-    do n=100,1000,50
-        allocate(A(n,n));
-        allocate(L(n,n));
-        allocate(G(n,n));
-        !< scalar cholesky decomposite 
-        ! call cpu_time(start);
-        ! call generate_data;
-        ! call chol_decomp_col;
-        ! call cpu_time(finish);
-        ! < row version 
-        call cpu_time(start);
-        call generate_data;
-        call chol_decomp_row;
-        call cpu_time(finish);
-        do j=1,n
-            L(j:n,j)=A(j:n,j);
-        end do
-        ! show matrix L, this matrix A = L*tL
-        error = maxval(abs(abs(G)-abs(matmul(L, transpose(L)))));
-        print *,n,error,finish-start;
-        deallocate(A);
-        deallocate(L);
-        deallocate(G);
+    do n = 500,5000,500
+    allocate(A(n,n));
+    allocate(L(n,n));
+    allocate(G(n,n));
+    allocate(F(n,n));
+    !< scalar cholesky decomposite 
+    call generate_data;
+    F = A;
+    call cpu_time(start);
+    call chol_decomp_col(A);
+    call cpu_time(finish);
+    do j=1,n
+        L(j:n,j)=A(j:n,j);
+    end do
+    ! show matrix L, this matrix A = L*tL
+    error = maxval(abs(abs(G)-abs(matmul(L, transpose(L)))));
+    print *,n,error,finish-start;
+    call cpu_time(start);
+    call chol_decomp_row(F);
+    call cpu_time(finish);
+    do j=1,n
+        L(j:n,j)=F(j:n,j);
+    end do
+    ! show matrix L, this matrix A = L*tL
+    error = maxval(abs(abs(G)-abs(matmul(L, transpose(L)))));
+    print *,n,error,finish-start;
+    
+    ! < row version 
+    ! call cpu_time(start);
+    ! call generate_data;
+    ! call chol_decomp_row;
+    ! call cpu_time(finish);
+    
+    deallocate(A);
+    deallocate(L);
+    deallocate(G);
+    deallocate(F);
     end do
     contains
-    subroutine chol_decomp_col()
+    subroutine chol_decomp_col(A)
     integer :: i,j,k;
+    double precision, allocatable :: A(:,:)
     do  i = 1,n
         A(i,i) = SQRT (A(i, i));
         do  j = i+1, n
@@ -65,7 +80,8 @@ program chol
             G=0;
             G=A;
     end subroutine Generate_Data
-    subroutine chol_decomp_row
+    subroutine chol_decomp_row(A)
+    double precision, allocatable :: A(:,:)
     do k=1,n
         A(k:n,k)=A(k:n,k)/sqrt(A(k,k));
         do i=k+1,n
